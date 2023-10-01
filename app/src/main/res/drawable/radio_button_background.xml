@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/radio_button_background.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- When the radio button is selected -->
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/greenBtn" /> <!-- Set the background color when selected -->
+        </shape>
+    </item>
+    <!-- When the radio button is not selected (unchecked) -->
+    <item android:state_checked="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" /> <!-- Set no background when unselected -->
+        </shape>
+    </item>
+</selector>

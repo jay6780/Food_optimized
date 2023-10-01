@@ -1,0 +1,26 @@
+<!-- item_food_diary.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/foodNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Food Name"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/calorieTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calorie"
+        android:textSize="14sp"/>
+
+    <!-- Add other views to display other food diary information -->
+
+</LinearLayout>

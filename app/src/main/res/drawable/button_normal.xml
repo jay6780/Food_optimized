@@ -1,0 +1,6 @@
+<!-- res/drawable/button_normal.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#CCCCCC"/> <!-- Change the color as desired -->
+    <corners android:radius="100dp"/> <!-- Set a large radius to make it a circle -->
+</shape>
+
