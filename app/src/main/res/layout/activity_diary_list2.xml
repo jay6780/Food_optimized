@@ -75,6 +75,16 @@
                             android:textSize="20dp"
                             android:textStyle="bold"
                             app:fontFamily="@font/arbutus"/>
+
+                        <TextView
+                            android:id="@+id/countdownTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Time Remaining"
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            app:fontFamily="@font/arbutus"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

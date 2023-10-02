@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,6 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodToQu"
         tools:targetApi="31">
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true"/>
+
+
         <activity
             android:name=".FoodDetailActivityU"
             android:exported="false" />
