@@ -6,8 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,6 +71,7 @@ public class DiaryListActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary_list2);
+        startService(new Intent(this, MyService.class));
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         TextView dateTextView = findViewById(R.id.date);
         diaryButton = findViewById(R.id.diary);
@@ -78,8 +82,8 @@ public class DiaryListActivity2 extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new DiaryEntryAdapter(new ArrayList<>(), this);
         recyclerView.setAdapter(adapter);
-        startService(new Intent(getApplicationContext(),MyService.class));
-
+//        foreground();
+//        startMyForegroundService();
         // Initialize BarChart
         barChart = findViewById(R.id.bar_chart);
 
@@ -97,6 +101,14 @@ public class DiaryListActivity2 extends AppCompatActivity {
                         handler.postDelayed(this, 60 * 1000); // 60,000 milliseconds = 1 minute
                     }
                 }, 60 * 1000); // Initial delay of 1 minute
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                killApp();
+            }
+        }, 65 * 1000);
+
 
                 // Set the formatted local date and time as the text for the TextView
                 updateTimerText(); // Initial delay of 1 minute
@@ -212,6 +224,68 @@ public class DiaryListActivity2 extends AppCompatActivity {
                 });
 
             }
+
+    private void killApp() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    private void startMyForegroundService() {
+        Intent serviceIntent = new Intent(this, MyForegroundService.class);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+    }
+    private void foreground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.canDrawOverlays(this)) {
+                startForegroundService();
+            } else {
+                // Permission to draw over other apps is not granted, show AlertDialog to request it
+                new AlertDialog.Builder(this)
+                        .setTitle("Permission Required")
+                        .setMessage("This app needs permission to display over other apps.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Open the permission request screen
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Handle user's choice if they click "Cancel"
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+        } else {
+            // For devices running Android versions prior to Marshmallow, no need to request permission
+            startForegroundService();
+            checkOverlayPermission();
+        }
+    }
+
+    private void startForegroundService() {
+        // Start your foreground service or do whatever you need
+        startService(new Intent(getApplicationContext(), ForegroundService.class));
+    }
+
+
+    public void checkOverlayPermission(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                // send user to the device settings
+                Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                startActivity(myIntent);
+            }
+        }
+    }
 
     private void updateTimerText() {
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());

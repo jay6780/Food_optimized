@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -53,11 +55,12 @@ public class DiaryEntryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             foodItemViewHolder.foodNameTextView.setText(foodItem.getFoodName()); // Set the food name
 
             // Load the image using Picasso
-            Picasso.get()
+            Glide.with(context)  // Replace 'context' with your actual context
                     .load(foodItem.getImageUrl())
                     .placeholder(R.drawable.ic_baseline_local_pizza_24)
                     .error(R.drawable.ic_baseline_local_pizza_24)
                     .into(foodItemViewHolder.imageView);
+
 
             // Set an onClickListener for the food item view
             foodItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -1,31 +1,35 @@
 package com.example.foodtoqu;
 
+        import android.app.Service;
+        import android.content.Intent;
+        import android.os.Handler;
+        import android.os.IBinder;
+        import android.util.Log;
+        import androidx.annotation.NonNull;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.Handler;
-import android.os.IBinder;
-import android.widget.Toast;
+        import com.google.firebase.auth.FirebaseAuth;
+        import com.google.firebase.auth.FirebaseUser;
+        import com.google.firebase.database.DataSnapshot;
+        import com.google.firebase.database.DatabaseError;
+        import com.google.firebase.database.DatabaseReference;
+        import com.google.firebase.database.FirebaseDatabase;
+        import com.google.firebase.database.ValueEventListener;
 
-import androidx.annotation.NonNull;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+        import java.text.SimpleDateFormat;
+        import java.util.Date;
+        import java.util.Locale;
 
 public class MyService extends Service {
     public MyService() {
     }
+
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        scheduleTask(intent);
+        return START_STICKY;
+    }
+
+    private void scheduleTask(Intent intent) {
         onTaskRemoved(intent);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -37,9 +41,18 @@ public class MyService extends Service {
             }
         }, 60 * 1000); // Initial delay of 1 minute
 
-        return START_STICKY;
+        // Add code to kill the app after 1 minute
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                killApp();
+            }
+        }, 65 * 1000);
     }
 
+    private void killApp() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
 
     private void removeOldDiaryEntriesForCurrentUser() {
         // Get the current user
@@ -72,7 +85,7 @@ public class MyService extends Service {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle errors here
+                            Log.e("MyService", "Error: " + databaseError.getMessage());
                         }
                     });
         }
@@ -83,11 +96,16 @@ public class MyService extends Service {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Intent restartServiceIntent = new Intent(getApplicationContext(),this.getClass());
+        Intent restartServiceIntent = new Intent(this, MyService.class);
         restartServiceIntent.setPackage(getPackageName());
         startService(restartServiceIntent);
         super.onTaskRemoved(rootIntent);
     }
+
+
 }
+
+

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -72,11 +73,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
 
         // Load the image using Picasso
-        Picasso.get()
+        Glide.with(context)  // Replace 'context' with your actual context
                 .load(foodItem.getImageUrl())
-                .placeholder(R.drawable.ic_baseline_local_pizza_24) // You can set a placeholder image
-                .error(R.drawable.ic_baseline_local_pizza_24) // You can set an error image
+                .placeholder(R.drawable.ic_baseline_local_pizza_24) // Set a placeholder image
+                .error(R.drawable.ic_baseline_local_pizza_24) // Set an error image
                 .into(holder.foodImageView);
+
     }
 
     @Override

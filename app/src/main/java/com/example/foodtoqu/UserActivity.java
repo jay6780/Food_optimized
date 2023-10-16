@@ -71,10 +71,9 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startService(new Intent(this, MyService.class));
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_user);
-
-
         initWidgets();
         hideFilter();
 
@@ -112,10 +111,19 @@ public class UserActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, spanCount);
         recyclerView2.setLayoutManager(layoutManager);
         recyclerView2.setAdapter(foodAdapter);
-
         // Initialize Firebase database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("foods");
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent();
+            String packageName = getPackageName();
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+                startService(new Intent(getApplicationContext(), MyService.class));
+                startActivity(intent);
+            }
+        }
         recommendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,6 +222,8 @@ public class UserActivity extends AppCompatActivity {
         });
 
     }
+
+
 
 
     private void applyFilters() {
